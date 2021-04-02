@@ -5,7 +5,6 @@
 #include <vector>
 #include <tuple>
 #include <algorithm>
-#include <functional>
 
 class Hotel
 {
@@ -20,7 +19,7 @@ protected:
 private:
 #pragma region String Comparison
 	static bool comparison_of_strings(const std::tuple<int, char, std::string, int>& a, //Compare funtion for [order_rooms_by_name] function.
-									  const std::tuple<int, char, std::string, int>& b) //Why does declaring it as [static] fix this? wtf?
+									  const std::tuple<int, char, std::string, int>& b)
 	{
 		return (std::get<2>(a) > std::get<2>(b));
 	}
@@ -40,11 +39,11 @@ public :
 #pragma region Display Rooms
 	void display_rooms()
 	{
-		for (const auto& i : m_hotel_rooms)
-		{
-			std::cout << "Room " << std::get<0>(i) << "| Room occupied: " << std::get<1>(i) <<"| Name: " << std::get<2>(i) << "| Number of occupants: " << std::get<3>(i) << std::endl;
-		}
-		std::cout << "\n";
+for (const auto& i : m_hotel_rooms)
+{
+	std::cout << "Room " << std::get<0>(i) << "| Room occupied: " << std::get<1>(i) << "| Name: " << std::get<2>(i) << "| Number of occupants: " << std::get<3>(i) << std::endl;
+}
+std::cout << "\n";
 	}
 #pragma endregion
 
@@ -67,10 +66,10 @@ public :
 	{
 		std::string user_input;
 		unsigned customer_found = 0;
-		
+
 		std::cout << "Please enter the name of the customer you are looking for: ";
 		std::cin >> user_input;
-		
+
 		std::cout << std::endl;
 		for (const auto& i : m_hotel_rooms)
 		{
@@ -81,7 +80,7 @@ public :
 				std::cout << "Customer found in room " << std::get<0>(i) << std::endl;
 				customer_found = customer_found + 1;
 			}
-			
+
 		}
 		if (customer_found == 0)
 		{
@@ -94,50 +93,81 @@ public :
 #pragma region Add Customer to Room
 	void add_customer_to_room()
 	{
-		std::tuple<int, char, std::string, int> temp;
-		int room_number;
-		char is_occupied;
-		std::string customer_name;
-		int number_of_customers;
-		
-		
+		std::tuple<int, char, std::string, int> temp_room;
+		int temp_room_number;
+		char temp_is_occupied;
+		std::string temp_customer_name;
+		int temp_number_of_customers;
+
+
 		std::cout << "Enter the room number you wish to add the customer to: ";
-		std::cin >> room_number;
-		
+		std::cin >> temp_room_number;
+
 		for (const auto& i : m_hotel_rooms)
 		{
-			if ((std::get<0>(i) == room_number) && (std::get<1>(i) == 'N'))
+			if ((std::get<0>(i) == temp_room_number) && (std::get<1>(i) == 'N'))
 			{
 				std::cout << "Room is available." << std::endl;
 
-				is_occupied = 'Y';
-			
-				std::cout << "Please enter the name of the main customer: " << std::endl;
-				std::cin >> customer_name;
-				
-				std::cout << "Please enter then number of customers that will be staying in the room: " << std::endl;
-				std::cin >> number_of_customers;
+				temp_is_occupied = 'Y';
 
-				auto insert_it = m_hotel_rooms.begin() + (room_number);
-				
-				temp = std::make_tuple(std::get<0>(i), is_occupied, customer_name, number_of_customers);
-				
-				m_hotel_rooms.insert(insert_it, temp);
-				m_hotel_rooms.erase((m_hotel_rooms.begin() + (room_number - 1)));
+				std::cout << "Please enter the name of the main customer: " << std::endl;
+				std::cin >> temp_customer_name;
+
+				std::cout << "Please enter then number of customers that will be staying in the room: " << std::endl;
+				std::cin >> temp_number_of_customers;
+
+				auto insert_it = m_hotel_rooms.begin() + (temp_room_number);
+
+				temp_room = std::make_tuple(std::get<0>(i), temp_is_occupied, temp_customer_name, temp_number_of_customers);
+
+				m_hotel_rooms.insert(insert_it, temp_room);
+				m_hotel_rooms.erase((m_hotel_rooms.begin() + (temp_room_number - 1)));
 				break;
 			}
-			else if ((std::get<0>(i) == room_number) && (std::get<1>(i) == 'Y'))
+			else if ((std::get<0>(i) == temp_room_number) && (std::get<1>(i) == 'Y'))
 			{
 				std::cout << "Room is unavailable." << std::endl;
 			}
 		}
+		std::cout << std::endl;
 	}
 #pragma endregion
 
 #pragma region Delete Customer from Room
 	void delete_customer_from_room()
 	{
+		std::tuple<int, char, std::string, int> temp_room;
+		int temp_room_number;
+		char temp_is_occupied;
+		std::string temp_customer_name = "Empty";
+		int temp_number_of_customers = 0;
 
+		std::cout << "Enter the room number you wish to remove the customer from: ";
+		std::cin >> temp_room_number;
+
+		for (const auto& i : m_hotel_rooms)
+		{
+			if ((std::get<0>(i) == temp_room_number) && (std::get<1>(i) == 'Y'))
+			{
+				std::cout << "Room is has been cleared" << std::endl;
+
+				temp_is_occupied = 'N';
+
+				auto insert_it = m_hotel_rooms.begin() + (temp_room_number);
+
+				temp_room = std::make_tuple(std::get<0>(i), temp_is_occupied, temp_customer_name, temp_number_of_customers);
+
+				m_hotel_rooms.insert(insert_it, temp_room);
+				m_hotel_rooms.erase((m_hotel_rooms.begin() + (temp_room_number - 1)));
+				break;
+			}
+			else if ((std::get<0>(i) == temp_room_number) && (std::get<1>(i) == 'N'))
+			{
+				std::cout << "Room is already empty." << std::endl;
+			}
+		}
+		std::cout << std::endl;
 	}
 #pragma endregion
 
